@@ -10,50 +10,28 @@ pipeline {
   agent any
 
   stages {
-
     stage('Cloning Git') {
-
       steps {
-
         git 'https://github.com/Lforlinux/Docker-CICD'
-
       }
-
     }
-
     stage('Building image') {
-
       steps{
-
         script {
-
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
-
         }
-
       }
-
     }
-
     stage('Deploy Image') {
-
       steps{
-
         script {
-
           docker.withRegistry( '', registryCredential ) {
-
             dockerImage.push()
-
           }
-
         }
-
       }
-
     }
 	stage('Remove Existing Container') {
-
       steps{
 	  script {
 			sh '''
@@ -72,22 +50,14 @@ pipeline {
 			'''
 		}
       }
-
     }
     
     	stage('Run Docker Image in Lab') {
-
       steps{
-
         script {
-
 		        sh "docker run -d -p 8000:8000 ${dockerImage.imageName()}"
         }
-
       }
-
 	}
-
   }
-
 }
